@@ -32,7 +32,22 @@ const getUserByEmail = (email_address) => {
   });
 };
 
+const getResetCode = (id, hashedPassword) => {
+  return new Promise((resolve, reject) => {
+    const values = [hashedPassword, id];
+    database.query(
+      `UPDATE users SET passwordResetCode =? WHERE id =?`,
+      values,
+      (err, result) => {
+        if (err) return reject(err);
+        resolve({message: "the password reset code was successfully updated"});
+      }
+    );
+  });
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
+  getResetCode
 };

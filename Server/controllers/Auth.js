@@ -1,13 +1,14 @@
-const { createUser, getUserByEmail } = require("../database/User");
+const { createUser, getUserByEmail, getResetCode } = require("../database/User");
+const { registerSchema, loginSchema } = require("../validators/AuthValidator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
-const { registerSchema, loginSchema } = require("../validators/AuthValidator");
+
 
 /*
  * @route POST /api/v1/auth/register
  * @desc Register a new user
- * @access Public
+ * @access Public [user - admin]
  * @param {String} user_name
  * @param {String} email_address
  * @param {String} password
@@ -18,17 +19,17 @@ const register = asyncHandler(async (req, res, next) => {
   const { error } = registerSchema.validate(req.body);
 
   if (error) {
-    const error = new Error(error.details[0].message);
-    error.statusCode = 400;
-    return next(error);
+    const err = new Error(error.details[0].message);
+    err.statusCode = 400;
+    return next(err);
   }
 
   // 2- Check if user already exists
   const existingUser = await getUserByEmail(email_address);
   if (existingUser) {
-    const error = new Error("User already exists");
-    error.statusCode = 400;
-    return next(error);
+    const err = new Error("User already exists");
+    err.statusCode = 400;
+    return next(err);
   }
 
   // 3- create user ID
@@ -57,7 +58,7 @@ const register = asyncHandler(async (req, res, next) => {
 /*
  * @route POST /api/v1/auth/login
  * @desc Login a user
- * @access Public
+ * @access Public [user - admin]
  * @param {String} email_address
  * @param {String} password
  */
@@ -66,9 +67,9 @@ const login = asyncHandler(async (req, res, next) => {
   // 1- validate user data
   const { error } = loginSchema.validate(req.body);
   if (error) {
-    const error = new Error(error.details[0].message);
-    error.statusCode = 400;
-    return next(error);
+    const err = new Error(error.details[0].message);
+    err.statusCode = 400;
+    return next(err);
   }
 
   // 2- check if user exists
@@ -101,7 +102,41 @@ const login = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+  const { email_address } = req.body;
+  // 1- check if user is exsist
+  const user = await getUserByEmail(email_address);
+
+  if (!user) {
+    const error = new Error("This email is not exsist.");
+    error.statusCode = 404;
+    return next(error);
+  }
+
+  // 2- generate a random of 6 numbers and add in database
+  const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
+  const hashedResetCode = await bcrypt.hash(resetCode, 10)
+  const result = await getResetCode(user.id, hashedResetCode);
+
+  if (result.err || !result) {
+    const error = new Error("Failed to save reset code.");
+    error.statusCode = 500;
+    return next(error);
+  }
+  
+  // 3- send email with reset code
+
+  res.status(200).json(result)
+})
+
+
+
+
+
 module.exports = {
   register,
   login,
+  resetPassword
 };
