@@ -21,7 +21,7 @@ const getUserByEmail = (email_address) => {
     }
 
     database.query(
-      `SELECT * FROM users WHERE email_address = ?`,
+      `SELECT * FROM users WHERE email_address =?`,
       [email_address],
       (err, result) => {
         if (err) return reject(err);
@@ -32,11 +32,24 @@ const getUserByEmail = (email_address) => {
   });
 };
 
+const getUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    if (!id) {
+      return reject(new Error("Missing required fields"));
+    }
+    database.query(`SELECT * FROM users WHERE id =?`, [id], (err, result) => {
+      if (err) return reject(err);
+      if (result.length === 0) return resolve(null);
+      resolve(result[0]);
+    });
+  });
+};
+
 const getResetCode = (id, hashedPassword) => {
   return new Promise((resolve, reject) => {
     const values = [hashedPassword, id];
     database.query(
-      `UPDATE users SET passwordResetCode =?, passwordResetExpire = (NOW() + INTERVAL 1 MINUTE) WHERE id =?`,
+      `UPDATE users SET resetPasswordCode =?, resetPasswordCodeExpire = (NOW() + INTERVAL 5 MINUTE) WHERE id =?`,
       values,
       (err, result) => {
         if (err) return reject(err);
@@ -51,7 +64,7 @@ const getResetCode = (id, hashedPassword) => {
 const getValidResetCode = (email_address) => {
   return new Promise((resolve, reject) => {
     database.query(
-      `SELECT passwordResetCode FROM users WHERE email_address = ? AND passwordResetExpire > NOW()`,
+      `SELECT resetPasswordCode FROM users WHERE email_address = ? AND resetPasswordCodeExpire > NOW()`,
       [email_address],
       (err, result) => {
         if (err) return reject(err);
@@ -71,6 +84,7 @@ const getValidResetCode = (email_address) => {
 module.exports = {
   createUser,
   getUserByEmail,
+  getUserById,
   getResetCode,
   getValidResetCode,
 };
