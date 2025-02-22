@@ -147,11 +147,21 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     },
   });
 
+  const message = `Hello [${user.user_name}],
+  We have received a request to reset your account password. If it was you who requested it,
+  please click the button below to reset your password:
+
+  ${resetCode}
+
+  If it was not you who requested a password reset, 
+  this message will be ignored, and nothing will be changed in your account.
+  `
+
   const mailOptions = {
     from: "Secure-sign",
     to: email_address,
-    subject: "Reset Password",
-    text: `Your reset code is ${resetCode}`,
+    subject: "Reset your account password",
+    text: message,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
