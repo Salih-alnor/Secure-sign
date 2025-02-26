@@ -49,7 +49,7 @@ const getResetCode = (id, hashedPassword) => {
   return new Promise((resolve, reject) => {
     const values = [hashedPassword, id];
     database.query(
-      `UPDATE users SET resetPasswordCode =?, resetPasswordCodeExpire = (NOW() + INTERVAL 5 MINUTE) WHERE id =?`,
+      `UPDATE users SET resetPasswordCode =?, resetPasswordCodeExpire = (NOW() + INTERVAL 1 MINUTE) WHERE id =?`,
       values,
       (err, result) => {
         if (err) return reject(err);
@@ -75,11 +75,27 @@ const getValidResetCode = (email_address) => {
           });
         }
 
-        resolve({ resetCode: result[0].passwordResetCode });
+        resolve({ resetCode: result[0].resetPasswordCode });
       }
     );
   });
 };
+
+const updateUserPassword = (email_address, hashedNewPassword) => {
+  return new Promise((resolve, reject) => {
+    const values = [hashedNewPassword, email_address];
+    database.query(
+      `UPDATE users SET password =? WHERE email_address =?`,
+      values,
+      (err, result) => {
+        if (err) return reject(err);
+        resolve({
+          message: "The password was successfully updated",
+        });
+      }
+    );
+  });
+}
 
 module.exports = {
   createUser,
@@ -87,4 +103,5 @@ module.exports = {
   getUserById,
   getResetCode,
   getValidResetCode,
+  updateUserPassword
 };

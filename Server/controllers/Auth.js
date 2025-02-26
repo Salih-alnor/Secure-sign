@@ -3,6 +3,7 @@ const {
   getUserByEmail,
   getResetCode,
   getValidResetCode,
+  updateUserPassword,
 } = require("../database/User");
 const { registerSchema, loginSchema } = require("../validators/AuthValidator");
 const jwt = require("jsonwebtoken");
@@ -51,6 +52,7 @@ const register = asyncHandler(async (req, res, next) => {
 
   // 7- send response
   res.status(201).json({
+    Status: "Success",
     message: "User registered successfully",
     userInfo: {
       user_name,
@@ -98,6 +100,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   // 5- successfull login
   res.status(200).json({
+    Status: "Success",
     message: "User logged in successfully",
     userInfo: {
       user_name: user.user_name,
@@ -135,7 +138,6 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     return next(error);
   }
 
- 
   // 3- send email with reset code
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -155,7 +157,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
   If it was not you who requested a password reset, 
   this message will be ignored, and nothing will be changed in your account.
-  `
+  `;
 
   const mailOptions = {
     from: "Secure-sign",
@@ -169,8 +171,10 @@ const resetPassword = asyncHandler(async (req, res, next) => {
       console.log(error);
       return res.status(500).json({ message: "Failed to send email." });
     }
-    
-    res.status(200).json({message: "sent a reset-code to email."});
+
+    res
+      .status(200)
+      .json({ Status: "Success", message: "sent a reset-code to email." });
   });
 });
 
@@ -179,6 +183,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
  * @desc Reset password
  * @access Private [user]
  * @param {String} email_address
+ * @param {String} reset_code
  */
 const verifyResetCode = asyncHandler(async (req, res, next) => {
   const { email_address, reset_code } = req.body;
@@ -191,6 +196,7 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
   }
   // 2- check if reset code is valid
   const hashedResetCode = await getValidResetCode(email_address);
+  // console.log(hashedResetCode)
   if (
     !hashedResetCode.resetCode ||
     !(await bcrypt.compare(reset_code, hashedResetCode.resetCode))
@@ -199,14 +205,47 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
     error.statusCode = 400;
     return next(error);
   }
-  res.status(200).json({ message: "reset code is valid" });
+  res.status(200).json({ Status: "Success", message: "reset code is valid" });
 });
 
+const updatePassword = asyncHandler(async (req, res, next) => {
+  const { email_address, new_password } = req.body;
+  // 1- check if user is exsist
+  const user = await getUserByEmail(email_address);
+  if (!user) {
+    const error = new Error("This email is not exsist.");
+    error.statusCode = 404;
+    return next(error);
+  }
 
+  // 2- check if new password isn't same as old password
+  const hashedOldPassword = user.password;
+  const isSamePassword = await bcrypt.compare(new_password, hashedOldPassword);
+  console.log(isSamePassword);
+  if (isSamePassword) {
+    const error = new Error("New password should not be same as old password.");
+    error.statusCode = 400;
+    return next(error);
+  }
+
+  // 3- hash user password
+  const hashedNewPassword = await bcrypt.hash(new_password, 10);
+  // 4- update user password in database
+  const result = await updateUserPassword(email_address, hashedNewPassword);
+  if (result.err || !result) {
+    const error = new Error("Failed to update password.");
+    error.statusCode = 500;
+    return next(error);
+  }
+  res
+    .status(200)
+    .json({ Status: "Success", message: "Password updated successfully" });
+});
 
 module.exports = {
   register,
   login,
   resetPassword,
   verifyResetCode,
+  updatePassword,
 };

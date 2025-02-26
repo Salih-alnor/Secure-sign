@@ -32,14 +32,14 @@ const authenticate = asyncHandler(async (req, res, next) => {
   }
   // 3- check if user is found
 
-  // 4- check if user is authorized to access this page
+  // 4- check if user is authenticated to access this page
   req.user = await getUserById(decoded.userId);
   if (!req.user) {
     const error = new Error("Not authenticated, user not found.");
     error.statusCode = 403;
     return next(error);
   }
-  // 5- if user is authorized, send response with user data
+  // 5- if user is authenticated, send response with user data
 
   next();
 });

@@ -20,13 +20,8 @@ const registerSchema = Joi.object({
     }),
   password: Joi.string().min(8).required().messages({
     "string.min": "password must be at least 8 characters long",
-    "string.empty": "password is not allowed to be empty",
     "any.required": "password is not allowed to be empty"
-  }),
-  confirm_password: Joi.string().required().valid(Joi.ref("password")).messages({
-    "any.required": "password is not allowed to be empty",
-    "any.only": "password must be matches",
-  }),
+  })
 });
 
 // login Schema
