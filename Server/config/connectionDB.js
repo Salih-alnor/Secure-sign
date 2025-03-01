@@ -13,8 +13,18 @@ dotenv.config({ path: "config.env" });
 
 let connection;
 
+
+const dbConfig = {
+  host: process.env.HOST ||'localhost',
+  user: process.env.USER ||'user',
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
+  ssl: {
+    rejectUnauthorized: true
+  }
+};
 function handleDisconnect() {
-  connection = mysql.createConnection(process.env.BASE_URL_DB);
+  connection = mysql.createConnection(dbConfig);
 
   connection.connect((err) => {
     if (err) {
