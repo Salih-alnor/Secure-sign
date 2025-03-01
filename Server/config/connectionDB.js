@@ -1,20 +1,32 @@
-const sql = require('mysql');
+const mysql = require("mysql2");
+const dotenv = require("dotenv");
+dotenv.config({ path: "config.env" });
 
-const connection = sql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Salih1996',
-    database: 'securesign'
-});
+// const connection = mysql.createConnection(process.env.BASE_URL_DB);
+// connection.connect((err, connection) => {
+//   if (err) {
+//     console.log(err.message, connection);
+//   } else {
+//     console.log("Connected database! ");
+//   }
+// });
 
-connection.connect((err, connection) => {
+let connection;
+
+function handleDisconnect() {
+  connection = mysql.createConnection(process.env.BASE_URL_DB);
+
+  connection.connect((err) => {
     if (err) {
-        console.log(err.message)
+      console.error("خطأ في الاتصال بقاعدة البيانات:", err);
+      setTimeout(handleDisconnect, 5000); // إعادة المحاولة بعد 5 ثوانٍ
     } else {
-        console.log("Connected database! ");
-    
+      console.log("✅ تم الاتصال بقاعدة البيانات");
     }
-})
+  });
+}
 
-
+handleDisconnect();
 module.exports = connection;
+
+

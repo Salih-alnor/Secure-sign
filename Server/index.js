@@ -9,6 +9,7 @@ app.use(express.json());
 const PORT = 5500;
 
 
+
 app.post("/", async (req, res, next) => {
   res.json({ message: "server is listening" });
 });
@@ -25,5 +26,5 @@ app.all('*', (req, res, next) => {
      res.status(err.statusCode || 403).json({error: err.message})
  })
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port:${PORT}`);
 });
