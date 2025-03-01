@@ -1,12 +1,15 @@
 const express = require("express");
 require("./config/connectionDB");
 const AuthApi = require("./apis/AuthApi");
+const dotenv = require("dotenv");
+const { promises } = require("nodemailer/lib/xoauth2");
+dotenv.config({ path: "config.env" });
 
 const app = express();
 
 app.use(express.json());
 
-const PORT = 5500;
+const PORT = process.env.PORT || 5500;
 
 
 
