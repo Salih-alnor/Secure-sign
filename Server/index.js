@@ -17,6 +17,10 @@ app.post("/", async (req, res, next) => {
   res.json({ message: "server is listening" });
 });
 
+app.post("/test", (req, res, next) => {
+  res.send("server is listening")
+})
+
 app.use("/api/v1/auth", AuthApi);
 
 

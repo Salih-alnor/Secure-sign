@@ -14,24 +14,23 @@ dotenv.config({ path: "config.env" });
 let connection;
 
 
-const dbConfig = {
-  host: process.env.HOST ||'localhost',
-  user: process.env.USER ||'user',
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE,
-  ssl: {
-    rejectUnauthorized: true
-  }
-};
+// const dbConfig = {
+//   host: process.env.HOST ||'localhost',
+//   user: process.env.USER ||'user',
+//   password: process.env.PASSWORD,
+//   database: process.env.DATABASE,
+//   ssl: {"rejectUnauthorized":true}
+ 
+// };
 function handleDisconnect() {
-  connection = mysql.createConnection(dbConfig);
+  connection = mysql.createConnection(process.env.DATABASE_URL);
 
   connection.connect((err) => {
     if (err) {
       console.error("خطأ في الاتصال بقاعدة البيانات:", err);
       setTimeout(handleDisconnect, 5000); // إعادة المحاولة بعد 5 ثوانٍ
     } else {
-      console.log("✅ تم الاتصال بقاعدة البيانات");
+      console.log("✅ Connected database");
     }
   });
 }
