@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import resetCode from "../../assets/images/reset-code.png";
@@ -28,6 +29,7 @@ const ForgotPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [hidePassword, setHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const InputFilad = ({
     placeholder,
     keyboardType,
@@ -135,13 +137,16 @@ const ForgotPassword = () => {
   const handleFormSubmit = async (values) => {
     const { password } = values;
     const email = route.params.email;
-    // console.log(password, confirm_password);
+    
     try {
+      setIsLoading(true);
       const response = await updatePassword(email, password);
       if (response.Status === "Success") {
+        setIsLoading(false);
         navigation.navigate("login");
       }
     } catch (error) {
+      setIsLoading(false);
       Alert.alert(error.response.data.error);
     }
   };
@@ -247,15 +252,23 @@ const ForgotPassword = () => {
                       marginBottom: 20,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        color: COLORS.LIGHT,
-                        fontWeight: 500,
-                      }}
-                    >
-                      Update password
-                    </Text>
+                    {isLoading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={COLORS.LIGHT}
+                        animating={isLoading}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: COLORS.LIGHT,
+                          fontWeight: 500,
+                        }}
+                      >
+                        Update password
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </React.Fragment>
               );

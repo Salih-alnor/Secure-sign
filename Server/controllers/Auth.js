@@ -33,7 +33,7 @@ const register = asyncHandler(async (req, res, next) => {
   // 2- Check if user already exists
   const existingUser = await getUserByEmail(email_address);
   if (existingUser) {
-    const err = new Error("User already exists");
+    const err = new Error("User already exist");
     err.statusCode = 400;
     return next(err);
   }
@@ -149,21 +149,27 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     },
   });
 
-  const message = `Hello [${user.user_name}],
-  We have received a request to reset your account password. If it was you who requested it,
-  please click the button below to reset your password:
+  // const message = `Hello [${user.user_name}],
+  // We have received a request to reset your account password. If it was you who requested it,
+  // please click the button below to reset your password:
 
-  ${resetCode}
+  // ${resetCode}
 
-  If it was not you who requested a password reset, 
-  this message will be ignored, and nothing will be changed in your account.
-  `;
+  // If it was not you who requested a password reset, 
+  // this message will be ignored, and nothing will be changed in your account.
+  // `;
 
   const mailOptions = {
     from: "Secure-sign",
     to: email_address,
     subject: "Reset your account password",
-    text: message,
+    html: `<h3>Hello [${user.user_name}],</h3>
+    <p>We have received a request to reset your account password. 
+    If it was you who requested it, please click the button below to reset your password:</p>
+    <h2 style={color: "blue"}>${resetCode}</h2>
+    <p>If it was not you who requested a password reset, 
+     this message will be ignored, and nothing will be changed in your account.</p>
+    `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -208,6 +214,13 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
   res.status(200).json({ Status: "Success", message: "reset code is valid" });
 });
 
+/*
+ * @route PUT /api/v1/auth/update-password
+ * @desc Update password
+ * @access Private [user]
+ * @param {String} email_address
+ * @param {String} new_password
+ */
 const updatePassword = asyncHandler(async (req, res, next) => {
   const { email_address, new_password } = req.body;
   // 1- check if user is exsist

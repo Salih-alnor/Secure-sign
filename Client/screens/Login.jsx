@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import loginImage from "../assets/images/login.png";
@@ -29,6 +30,7 @@ import { login } from "../api/services/auth";
 const Login = () => {
   const navigation = useNavigation();
   const [hidePassword, setHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const InputFilad = ({
     placeholder,
     keyboardType,
@@ -66,7 +68,8 @@ const Login = () => {
       paddingLeft: 8,
       width: width - 100,
       fontSize: 16,
-      color: COLORS.secondaryColor,
+      color: COLORS.DARK_GRAY,
+     
     };
 
     if (formikProps.errors[formikKey] && formikProps.touched[formikKey]) {
@@ -91,10 +94,11 @@ const Login = () => {
               keyboardType={keyboardType}
               placeholder={placeholder}
               onBlur={formikProps.handleBlur(formikKey)}
-              placeholderTextColor={COLORS.secondaryColor}
+              placeholderTextColor={COLORS.GRAY}
               onChangeText={formikProps.handleChange(formikKey)}
               style={input}
               {...rest}
+              
             />
           </View>
           {placeholder === "Password" ? (
@@ -133,17 +137,18 @@ const Login = () => {
 
   const handleFormSubmit = async (values) => {
     const { email, password } = values;
-   try {
-    // console.log(values)
-    const response = await login(email, password)
-    if(response.Status === "Success") {
-      navigation.navigate("home")
+    try {
+      // console.log(values)
+      setIsLoading(true);
+      const response = await login(email, password);
+      if (response.Status === "Success") {
+        setIsLoading(false);
+        navigation.navigate("home");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      Alert.alert(error.response.data.error);
     }
-    
-   } catch (error) {
-    Alert.alert(error.response.data.error)
-   }
-   
   };
 
   return (
@@ -207,8 +212,8 @@ const Login = () => {
                   />
 
                   <View style={styles.forgetPassword}>
-                    <TouchableOpacity 
-                    onPress={() => navigation.navigate("forgot-password")}
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("forgot-password")}
                     >
                       <Text
                         style={{
@@ -235,15 +240,23 @@ const Login = () => {
                       marginBottom: 20,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        color: COLORS.LIGHT,
-                        fontWeight: 500,
-                      }}
-                    >
-                      Sign in
-                    </Text>
+                    {isLoading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={COLORS.LIGHT}
+                        animating={isLoading}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: COLORS.LIGHT,
+                          fontWeight: 500,
+                        }}
+                      >
+                        Sign in
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </React.Fragment>
               );

@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
   Alert,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import resetCode from "../../assets/images/reset-code.png";
+import resetCode from "../../assets/images/verification.png";
 import back from "../../assets/icons/back.png";
 import { useNavigation, useRoute } from "@react-navigation/native";
 const { width } = Dimensions.get("screen");
@@ -25,6 +26,7 @@ const VerificationCode = () => {
   const [timer, setTimer] = useState(60);
   const [isExpired, setIsExpired] = useState(false);
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (timer > 0) {
@@ -75,18 +77,19 @@ const VerificationCode = () => {
     // 2- send verifyCode to server to validate it
 
     try {
-      console.log(verifyCode);
+      setIsLoading(true)
       const response = await verifyResetPassword(email, verifyCode);
-      console.log(response.message);
       if (response.Status === "Success") {
+        setIsLoading(false);
         navigation.replace("reset-password", { email });
       }
     } catch (error) {
+      setIsLoading(false);
       Alert.alert(error.response.data.error);
     }
   };
 
-  const ResendCode = async() => {
+  const ResendCode = async () => {
     // const email = route.params.email;
 
     setIsExpired(false);
@@ -138,15 +141,23 @@ const VerificationCode = () => {
             marginBottom: 20,
           }}
         >
-          <Text
-            style={{
-              fontSize: 18,
-              color: COLORS.LIGHT,
-              fontWeight: 500,
-            }}
-          >
-            Confirm
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator
+              size="small"
+              color={COLORS.LIGHT}
+              animating={isLoading}
+            />
+          ) : (
+            <Text
+              style={{
+                fontSize: 18,
+                color: COLORS.LIGHT,
+                fontWeight: 500,
+              }}
+            >
+              Confirm
+            </Text>
+          )}
         </TouchableOpacity>
         <View
           style={{

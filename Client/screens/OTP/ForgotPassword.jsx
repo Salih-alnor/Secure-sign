@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import React, { useState } from "react";
 import resetCode from "../../assets/images/reset-code.png";
@@ -26,6 +28,7 @@ import { forgotPassword } from "../../api/services/auth";
 const ForgotPassword = () => {
   const navigation = useNavigation();
   const [hidePassword, setHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const InputFilad = ({
     placeholder,
     keyboardType,
@@ -127,14 +130,16 @@ const ForgotPassword = () => {
 
   const handleFormSubmit = async (values) => {
     const { email } = values;
-    console.log(email);
     try {
+      setIsLoading(true);
       const response = await forgotPassword(email);
       if (response.Status === "Success") {
-        navigation.navigate("verify-code", {email});
+        setIsLoading(false);
+        navigation.navigate("verify-code", { email });
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      setIsLoading(false);
+      Alert.alert(error.response.data.error);
     }
   };
 
@@ -235,15 +240,23 @@ const ForgotPassword = () => {
                       marginBottom: 20,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        color: COLORS.LIGHT,
-                        fontWeight: 500,
-                      }}
-                    >
-                      Reset Password
-                    </Text>
+                    {isLoading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={COLORS.LIGHT}
+                        animating={isLoading}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: COLORS.LIGHT,
+                          fontWeight: 500,
+                        }}
+                      >
+                        Reset Password
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </React.Fragment>
               );

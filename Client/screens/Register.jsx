@@ -9,10 +9,10 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import registerImage from "../assets/images/register.png";
-import back from "../assets/icons/back.png";
 import user from "../assets/icons/user.png";
 import email from "../assets/icons/email.png";
 import lock from "../assets/icons/lock.png";
@@ -28,6 +28,7 @@ import { register } from "../api/services/auth";
 const Register = () => {
   const navigation = useNavigation();
   const [hidePassword, setHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const InputFilad = ({
     placeholder,
     keyboardType,
@@ -133,20 +134,21 @@ const Register = () => {
   const handleFormSubmit = async (values) => {
     const { name, email, password } = values;
     try {
+      setIsLoading(true);
       const response = await register(name, email, password);
-      if(response.Status === 'Success'){
-        navigation.replace('home')
+      if (response.Status === "Success") {
+        setIsLoading(false);
+        navigation.replace("home");
       }
     } catch (error) {
-      Alert.alert(error.response.data.error)
+      setIsLoading(false);
+      Alert.alert(error.response.data.error);
     }
-
   };
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-    
         <View
           style={{
             width: width - 60,
@@ -227,15 +229,23 @@ const Register = () => {
                       marginBottom: 10,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        color: COLORS.LIGHT,
-                        fontWeight: 500,
-                      }}
-                    >
-                      Sign up
-                    </Text>
+                    {isLoading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={COLORS.LIGHT}
+                        animating={isLoading}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: COLORS.LIGHT,
+                          fontWeight: 500,
+                        }}
+                      >
+                        Sign up
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </React.Fragment>
               );
@@ -247,7 +257,6 @@ const Register = () => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            
           }}
         >
           <Text
