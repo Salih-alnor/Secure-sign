@@ -11,7 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import loginImage from "../assets/images/login.png";
 import email from "../assets/icons/email.png";
 import lock from "../assets/icons/lock.png";
@@ -31,6 +31,7 @@ const Login = () => {
   const navigation = useNavigation();
   const [hidePassword, setHidePassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
   const InputFilad = ({
     placeholder,
     keyboardType,
@@ -69,7 +70,6 @@ const Login = () => {
       width: width - 100,
       fontSize: 16,
       color: COLORS.DARK_GRAY,
-     
     };
 
     if (formikProps.errors[formikKey] && formikProps.touched[formikKey]) {
@@ -98,7 +98,6 @@ const Login = () => {
               onChangeText={formikProps.handleChange(formikKey)}
               style={input}
               {...rest}
-              
             />
           </View>
           {placeholder === "Password" ? (
@@ -283,7 +282,10 @@ const Login = () => {
           </View>
         </View>
         <View style={styles.otherAccounts}>
-          <TouchableOpacity style={styles.account}>
+          <TouchableOpacity
+            style={styles.account}
+            
+          >
             <Image style={styles.accountImage} source={googleIcon} />
           </TouchableOpacity>
 

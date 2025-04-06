@@ -111,7 +111,7 @@ const VerificationCode = () => {
         </View>
         <Text style={styles.title}>Enter Verification Code</Text>
         <Text style={styles.subtitle}>
-          Please enter the 4-digit code sent to you
+          Please enter the 4-digit code sent to your e-mail
         </Text>
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
@@ -155,7 +155,7 @@ const VerificationCode = () => {
                 fontWeight: 500,
               }}
             >
-              Confirm
+              Verify-code
             </Text>
           )}
         </TouchableOpacity>

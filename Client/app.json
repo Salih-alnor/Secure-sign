@@ -13,18 +13,49 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.salihkreem.securesign",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "ttpc.securesign",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/splash.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.salihkreem.securesign",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/icons/splash.png"
+    },
+    "scheme": "secure-sign",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4665efd4-ce2a-4b0e-b39f-913b1cb8cc2d"
+      }
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.534070073290-inljiurqcq29ct5lg8ttklguu9nokall"
+        }
+      ]
+    ],
+    "owner": "salihkreem",
+    "updates": {
+      "url": "https://u.expo.dev/4665efd4-ce2a-4b0e-b39f-913b1cb8cc2d"
     }
   }
 }
