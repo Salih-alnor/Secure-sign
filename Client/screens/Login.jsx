@@ -282,10 +282,7 @@ const Login = () => {
           </View>
         </View>
         <View style={styles.otherAccounts}>
-          <TouchableOpacity
-            style={styles.account}
-            
-          >
+          <TouchableOpacity style={styles.account}>
             <Image style={styles.accountImage} source={googleIcon} />
           </TouchableOpacity>
 
