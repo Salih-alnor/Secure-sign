@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Dimensions,
-  Platform,
   TouchableOpacity,
   TextInput,
   ScrollView,
@@ -28,21 +27,6 @@ const VerificationCode = () => {
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    } else {
-      setIsExpired(true); // عند انتهاء المؤقت
-    }
-  }, [timer]);
-
-  useEffect(() => {
-    inputRefs[0].current.focus();
-  }, []);
-
   const handleChange = (index, value) => {
     if (/^\d$/.test(value)) {
       const newOtp = [...otp];
@@ -51,6 +35,21 @@ const VerificationCode = () => {
       if (index < 3) inputRefs[index + 1].current.focus();
     }
   };
+
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setIsExpired(true);
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    inputRefs[0].current.focus();
+  }, []);
 
   const handleKeyDown = (index, e) => {
     if (e.nativeEvent.key === "Backspace") {
@@ -77,7 +76,7 @@ const VerificationCode = () => {
     // 2- send verifyCode to server to validate it
 
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const response = await verifyResetPassword(email, verifyCode);
       if (response.Status === "Success") {
         setIsLoading(false);

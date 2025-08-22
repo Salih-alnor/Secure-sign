@@ -92,7 +92,7 @@ const ForgotPassword = () => {
               keyboardType={keyboardType}
               placeholder={placeholder}
               onBlur={formikProps.handleBlur(formikKey)}
-              placeholderTextColor={COLORS.secondaryColor}
+              placeholderTextColor={COLORS.GRAY}
               onChangeText={formikProps.handleChange(formikKey)}
               style={input}
               {...rest}

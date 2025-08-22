@@ -51,7 +51,8 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.534070073290-inljiurqcq29ct5lg8ttklguu9nokall"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "owner": "salihkreem",
     "updates": {

@@ -5,12 +5,17 @@ dotenv.config({ path: "config.env" });
 let connection;
 
 function handleDisconnect() {
-  connection = mysql.createConnection(process.env.DATABASE_URL);
+  connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "Salih1996",
+    database: "securesign"
+  });
 
   connection.connect((err) => {
     if (err) {
-      console.error("خطأ في الاتصال بقاعدة البيانات:", err);
-      setTimeout(handleDisconnect, 5000); // إعادة المحاولة بعد 5 ثوانٍ
+      console.error(err);
+      setTimeout(handleDisconnect, 5000);
     } else {
       console.log("✅ Connected database");
     }
@@ -19,5 +24,3 @@ function handleDisconnect() {
 
 handleDisconnect();
 module.exports = connection;
-
-

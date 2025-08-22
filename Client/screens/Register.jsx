@@ -66,7 +66,7 @@ const Register = () => {
       paddingLeft: 8,
       width: width - 100,
       fontSize: 16,
-      color: COLORS.secondaryColor,
+      color: COLORS.DARK_GRAY,
     };
 
     if (formikProps.errors[formikKey] && formikProps.touched[formikKey]) {
@@ -91,7 +91,7 @@ const Register = () => {
               keyboardType={keyboardType}
               placeholder={placeholder}
               onBlur={formikProps.handleBlur(formikKey)}
-              placeholderTextColor={COLORS.secondaryColor}
+              placeholderTextColor={COLORS.GRAY}
               onChangeText={formikProps.handleChange(formikKey)}
               style={input}
               {...rest}
