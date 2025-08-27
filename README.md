@@ -3,7 +3,6 @@
 A **Password Recovery Application** built with **React Native** for the frontend and **Node.js + MySQL** for the backend.  
 The app provides a complete flow for account management: login, registration, and password reset via email using **Nodemailer**.
 
----
 
 ## 📱 Screens
 1. **Splash Screen** – Intro screen when opening the app.
@@ -13,7 +12,7 @@ The app provides a complete flow for account management: login, registration, an
 5. **Verification Code** – Enter verification code sent via email.
 6. **Reset Password** – Set a new password.
 
----
+
 
 ## 🛠️ Tech Stack
 
@@ -27,12 +26,13 @@ The app provides a complete flow for account management: login, registration, an
 - 📬 Nodemailer (send recovery codes via email)
 - 🗄️ MySQL (user data storage)
 
----
+
 
 ## ⚙️ How to Run
 
+
 ### 1️⃣ Backend (Node.js + Express)
-```bash
+
 # Navigate to backend folder
 cd Server
 
@@ -57,18 +57,9 @@ npm start
 
 
 
+![]
+<img src="./Client/assets//Screenshot/Login.png" width="190px" height="600px">
+<img src="./Client/assets//Screenshot/Rigster.png" width="190px" height="600px">
+<img src="./Client/assets//Screenshot/Forgot-password.png" width="190px" height="600px">
+<img src="./Client/assets//Screenshot/Reset-password.png" width="190px" height="600px">
 
-
-
-
-Login Screen
-![Login](./Client/assets//Screenshot/Login.png)
-
-Register Screen
-![Rigster](./Client/assets//Screenshot/Rigster.png)
-
-Forgot-password Screen 
-![Rigster](./Client/assets//Screenshot/Forgot-password.png)
-
-Reset-password Screen
-![Rigster](./Client/assets//Screenshot/Reset-password.png)
