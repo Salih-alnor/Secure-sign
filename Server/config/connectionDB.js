@@ -6,10 +6,10 @@ let connection;
 
 function handleDisconnect() {
   connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Salih1996",
-    database: "securesign"
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
   });
 
   connection.connect((err) => {
