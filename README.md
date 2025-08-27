@@ -51,7 +51,7 @@ cd Client
 # Install dependencies
 npm install
 
-# Start the app (Expo or React Native CLI)
+# Start the app (Expo)
 npm start
 
 
